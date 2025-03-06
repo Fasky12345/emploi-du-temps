@@ -3,46 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emploi du Temps</title>
+    <title>Emploi du Temps et Liens</title>
     <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <nav class="menu">
-        <button onclick="toggleMenu()">☰ Menu</button>
-        <div id="menuItems" class="menu-items">
-            <a href="index.html">Emploi du Temps</a>
-            <a href="liens.html">Liens</a>
-        </div>
-    </nav>
-    
-    <div class="container">
-        <h1>Ajouter ou Modifier un cours</h1>
-        <div class="form-group">
-            <input type="hidden" id="editingIndex">
-            <input type="text" id="courseName" placeholder="Nom du cours">
-            <input type="text" id="professor" placeholder="Professeur">
-            <input type="color" id="color">
-            <button onclick="addOrUpdateCourse()">Ajouter/Mettre à jour</button>
-        </div>
-        
-        <h2>Liste des cours</h2>
-        <div class="course-list" id="courseList"></div>
-        
-        <h2>Emploi du Temps</h2>
-        <label for="selectedCourse">Sélectionner un cours :</label>
-        <select id="selectedCourse"></select>
-        <div class="schedule" id="scheduleGrid"></div>
-    </div>
-    
     <script>
-        let courses = JSON.parse(localStorage.getItem('courses')) || [];
-        let schedule = JSON.parse(localStorage.getItem('schedule')) || {};
+        document.addEventListener("DOMContentLoaded", function() {
+            displayCourses();
+            updateCourseDropdown();
+            createScheduleGrid();
+            displayCustomLinks();
+        });
         
         function toggleMenu() {
-            let menu = document.getElementById('menuItems');
-            menu.classList.toggle('active');
+            document.getElementById('menuItems').classList.toggle('active');
         }
         
+        let courses = JSON.parse(localStorage.getItem('courses')) || [];
+        let schedule = JSON.parse(localStorage.getItem('schedule')) || {};
+        let customLinks = JSON.parse(localStorage.getItem('customLinks')) || [];
+
         function addOrUpdateCourse() {
             let name = document.getElementById('courseName').value.trim();
             let professor = document.getElementById('professor').value.trim();
@@ -100,7 +78,7 @@
             let days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
             let hours = ['08h-09h', '09h-10h', '10h-11h', '11h-12h', '14h-15h', '15h-16h'];
             
-            grid.innerHTML += '<div></div>'; // Coin vide
+            grid.innerHTML += '<div></div>'; 
             days.forEach(day => {
                 let header = document.createElement('div');
                 header.className = 'cell';
@@ -146,9 +124,57 @@
             localStorage.setItem('schedule', JSON.stringify(schedule));
         }
 
-        displayCourses();
-        updateCourseDropdown();
-        createScheduleGrid();
+        function addCustomLink() {
+            let title = document.getElementById('linkTitle').value;
+            let url = document.getElementById('linkURL').value;
+            if (!title || !url) return alert('Veuillez remplir les champs.');
+            customLinks.push({ title, url });
+            localStorage.setItem('customLinks', JSON.stringify(customLinks));
+            displayCustomLinks();
+        }
+
+        function displayCustomLinks() {
+            let list = document.getElementById('customLinksList');
+            list.innerHTML = '';
+            customLinks.forEach(link => {
+                let li = document.createElement('li');
+                li.innerHTML = `<a href="${link.url}" target="_blank">${link.title}</a>`;
+                list.appendChild(li);
+            });
+        }
     </script>
+</head>
+<body>
+    <nav class="menu">
+        <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>
+        <div id="menuItems" class="menu-items">
+            <a href="#emploi-du-temps">Emploi du Temps</a>
+            <a href="#liens">Liens</a>
+        </div>
+    </nav>
+    
+    <section id="emploi-du-temps" class="container">
+        <h1>Ajouter ou Modifier un cours</h1>
+        <div class="form-group">
+            <input type="hidden" id="editingIndex">
+            <input type="text" id="courseName" placeholder="Nom du cours">
+            <input type="text" id="professor" placeholder="Professeur">
+            <input type="color" id="color">
+            <button onclick="addOrUpdateCourse()">Ajouter/Mettre à jour</button>
+        </div>
+        <h2>Liste des cours</h2>
+        <div class="course-list" id="courseList"></div>
+        <h2>Emploi du Temps</h2>
+        <select id="selectedCourse"></select>
+        <div class="schedule" id="scheduleGrid"></div>
+    </section>
+    
+    <section id="liens" class="container">
+        <h1>Liens Utiles</h1>
+        <input type="text" id="linkTitle" placeholder="Nom du lien">
+        <input type="url" id="linkURL" placeholder="URL du lien">
+        <button onclick="addCustomLink()">Ajouter</button>
+        <ul id="customLinksList"></ul>
+    </section>
 </body>
 </html>
