@@ -4,40 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emploi du Temps</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .course-list { margin-top: 20px; }
-        .course-item { padding: 5px; margin: 5px; border-radius: 5px; color: white; }
-        .schedule { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-top: 20px; }
-        .cell { padding: 10px; border: 1px solid black; text-align: center; min-height: 50px; cursor: pointer; }
-        .cell.empty { background-color: #f0f0f0; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Ajouter un cours</h1>
-    <label>Nom du cours: <input type="text" id="courseName"></label>
-    <label>Professeur: <input type="text" id="professor"></label>
-    <label>Couleur: <input type="color" id="color"></label>
-    <button onclick="addCourse()">Ajouter</button>
+    <nav class="menu">
+        <button onclick="toggleMenu()">☰ Menu</button>
+        <div id="menuItems" class="menu-items">
+            <a href="index.html">Emploi du Temps</a>
+            <a href="liens.html">Liens</a>
+        </div>
+    </nav>
     
-    <h2>Liste des cours</h2>
-    <div class="course-list" id="courseList"></div>
-    
-    <h2>Emploi du Temps</h2>
-    <label for="selectedCourse">Sélectionner un cours :</label>
-    <select id="selectedCourse"></select>
-    <div class="schedule" id="scheduleGrid"></div>
+    <div class="container">
+        <h1>Ajouter un cours</h1>
+        <div class="form-group">
+            <input type="text" id="courseName" placeholder="Nom du cours">
+            <input type="text" id="professor" placeholder="Professeur">
+            <input type="color" id="color">
+            <button onclick="addCourse()">Ajouter</button>
+        </div>
+        
+        <h2>Liste des cours</h2>
+        <div class="course-list" id="courseList"></div>
+        
+        <h2>Emploi du Temps</h2>
+        <label for="selectedCourse">Sélectionner un cours :</label>
+        <select id="selectedCourse"></select>
+        <div class="schedule" id="scheduleGrid"></div>
+    </div>
     
     <script>
         let courses = JSON.parse(localStorage.getItem('courses')) || [];
         let schedule = JSON.parse(localStorage.getItem('schedule')) || {};
         
+        function toggleMenu() {
+            let menu = document.getElementById('menuItems');
+            menu.classList.toggle('active');
+        }
+        
         function addCourse() {
-            let name = document.getElementById('courseName').value;
-            let professor = document.getElementById('professor').value;
+            let name = document.getElementById('courseName').value.trim();
+            let professor = document.getElementById('professor').value.trim();
             let color = document.getElementById('color').value;
             
-            if (name.trim() === '') return alert('Veuillez entrer un nom de cours.');
+            if (!name) return alert('Veuillez entrer un nom de cours.');
             
             let course = { name, professor, color };
             courses.push(course);
@@ -75,7 +85,6 @@
             let days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
             let hours = ['08h-09h', '09h-10h', '10h-11h', '11h-12h', '14h-15h', '15h-16h'];
             
-            // En-têtes
             grid.innerHTML += '<div></div>'; // Coin vide
             days.forEach(day => {
                 let header = document.createElement('div');
