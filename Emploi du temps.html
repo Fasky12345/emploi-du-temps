@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emploi du Temps</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="menu">
+        <div class="logo">MonSite</div>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="emploi-du-temps.html">Emploi du Temps</a></li>
+            <li><a href="liens.html">Liens</a></li>
+        </ul>
+    </nav>
+    
+    <header class="hero">
+        <h1>Votre Emploi du Temps</h1>
+    </header>
+
+    <div class="container">
+        <h2>Ajouter ou Modifier un Cours</h2>
+        <div class="form-group">
+            <input type="hidden" id="editingIndex">
+            <input type="text" id="courseName" placeholder="Nom du cours">
+            <input type="text" id="professor" placeholder="Professeur">
+            <input type="color" id="color">
+            <button onclick="addOrUpdateCourse()">Ajouter/Mettre à jour</button>
+        </div>
+        
+        <h2>Liste des Cours</h2>
+        <div class="course-list" id="courseList"></div>
+        
+        <h2>Emploi du Temps</h2>
+        <label for="selectedCourse">Sélectionner un cours :</label>
+        <select id="selectedCourse"></select>
+        <div class="schedule" id="scheduleGrid"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
