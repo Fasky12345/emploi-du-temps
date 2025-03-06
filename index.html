@@ -3,178 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emploi du Temps et Liens</title>
+    <title>Accueil - Mon Site</title>
     <link rel="stylesheet" href="styles.css">
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            displayCourses();
-            updateCourseDropdown();
-            createScheduleGrid();
-            displayCustomLinks();
-        });
-        
-        function toggleMenu() {
-            document.getElementById('menuItems').classList.toggle('active');
-        }
-        
-        let courses = JSON.parse(localStorage.getItem('courses')) || [];
-        let schedule = JSON.parse(localStorage.getItem('schedule')) || {};
-        let customLinks = JSON.parse(localStorage.getItem('customLinks')) || [];
-
-        function addOrUpdateCourse() {
-            let name = document.getElementById('courseName').value.trim();
-            let professor = document.getElementById('professor').value.trim();
-            let color = document.getElementById('color').value;
-            let editingIndex = document.getElementById('editingIndex').value;
-            
-            if (!name) return alert('Veuillez entrer un nom de cours.');
-            
-            if (editingIndex) {
-                courses[editingIndex] = { name, professor, color };
-            } else {
-                courses.push({ name, professor, color });
-            }
-            
-            localStorage.setItem('courses', JSON.stringify(courses));
-            displayCourses();
-            updateCourseDropdown();
-            document.getElementById('editingIndex').value = '';
-        }
-
-        function displayCourses() {
-            let list = document.getElementById('courseList');
-            list.innerHTML = '';
-            courses.forEach((course, index) => {
-                let div = document.createElement('div');
-                div.className = 'course-item';
-                div.style.backgroundColor = course.color;
-                div.innerHTML = `${course.name} - ${course.professor} <button onclick="editCourse(${index})">✏️ Modifier</button>`;
-                list.appendChild(div);
-            });
-        }
-
-        function editCourse(index) {
-            let course = courses[index];
-            document.getElementById('courseName').value = course.name;
-            document.getElementById('professor').value = course.professor;
-            document.getElementById('color').value = course.color;
-            document.getElementById('editingIndex').value = index;
-        }
-
-        function updateCourseDropdown() {
-            let dropdown = document.getElementById('selectedCourse');
-            dropdown.innerHTML = '';
-            courses.forEach(course => {
-                let option = document.createElement('option');
-                option.value = course.name;
-                option.textContent = course.name;
-                dropdown.appendChild(option);
-            });
-        }
-
-        function createScheduleGrid() {
-            let grid = document.getElementById('scheduleGrid');
-            grid.innerHTML = '';
-            let days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
-            let hours = ['08h-09h', '09h-10h', '10h-11h', '11h-12h', '14h-15h', '15h-16h'];
-            
-            grid.innerHTML += '<div></div>'; 
-            days.forEach(day => {
-                let header = document.createElement('div');
-                header.className = 'cell';
-                header.textContent = day;
-                grid.appendChild(header);
-            });
-
-            hours.forEach(hour => {
-                let hourCell = document.createElement('div');
-                hourCell.className = 'cell';
-                hourCell.textContent = hour;
-                grid.appendChild(hourCell);
-                
-                days.forEach(day => {
-                    let cell = document.createElement('div');
-                    cell.className = 'cell empty';
-                    cell.dataset.day = day;
-                    cell.dataset.hour = hour;
-                    cell.onclick = assignCourse;
-                    
-                    let key = `${day}-${hour}`;
-                    if (schedule[key]) {
-                        cell.style.backgroundColor = schedule[key].color;
-                        cell.textContent = schedule[key].name;
-                    }
-                    
-                    grid.appendChild(cell);
-                });
-            });
-        }
-
-        function assignCourse() {
-            let selectedCourseName = document.getElementById('selectedCourse').value;
-            let selectedCourse = courses.find(c => c.name === selectedCourseName);
-            if (!selectedCourse) return;
-            
-            this.style.backgroundColor = selectedCourse.color;
-            this.textContent = selectedCourse.name;
-            this.classList.remove('empty');
-            
-            let key = `${this.dataset.day}-${this.dataset.hour}`;
-            schedule[key] = selectedCourse;
-            localStorage.setItem('schedule', JSON.stringify(schedule));
-        }
-
-        function addCustomLink() {
-            let title = document.getElementById('linkTitle').value;
-            let url = document.getElementById('linkURL').value;
-            if (!title || !url) return alert('Veuillez remplir les champs.');
-            customLinks.push({ title, url });
-            localStorage.setItem('customLinks', JSON.stringify(customLinks));
-            displayCustomLinks();
-        }
-
-        function displayCustomLinks() {
-            let list = document.getElementById('customLinksList');
-            list.innerHTML = '';
-            customLinks.forEach(link => {
-                let li = document.createElement('li');
-                li.innerHTML = `<a href="${link.url}" target="_blank">${link.title}</a>`;
-                list.appendChild(li);
-            });
-        }
-    </script>
 </head>
 <body>
     <nav class="menu">
-        <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>
-        <div id="menuItems" class="menu-items">
-            <a href="#emploi-du-temps">Emploi du Temps</a>
-            <a href="#liens">Liens</a>
-        </div>
+        <div class="logo">MonSite</div>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="emploi-du-temps.html">Emploi du Temps</a></li>
+            <li><a href="liens.html">Liens</a></li>
+        </ul>
     </nav>
     
-    <section id="emploi-du-temps" class="container">
-        <h1>Ajouter ou Modifier un cours</h1>
-        <div class="form-group">
-            <input type="hidden" id="editingIndex">
-            <input type="text" id="courseName" placeholder="Nom du cours">
-            <input type="text" id="professor" placeholder="Professeur">
-            <input type="color" id="color">
-            <button onclick="addOrUpdateCourse()">Ajouter/Mettre à jour</button>
-        </div>
-        <h2>Liste des cours</h2>
-        <div class="course-list" id="courseList"></div>
-        <h2>Emploi du Temps</h2>
-        <select id="selectedCourse"></select>
-        <div class="schedule" id="scheduleGrid"></div>
-    </section>
-    
-    <section id="liens" class="container">
-        <h1>Liens Utiles</h1>
-        <input type="text" id="linkTitle" placeholder="Nom du lien">
-        <input type="url" id="linkURL" placeholder="URL du lien">
-        <button onclick="addCustomLink()">Ajouter</button>
-        <ul id="customLinksList"></ul>
+    <header class="hero">
+        <h1>Bienvenue sur MonSite</h1>
+        <p>Gérez votre emploi du temps et vos liens en toute simplicité.</p>
+    </header>
+
+    <section class="presentation">
+        <h2>Pourquoi utiliser MonSite ?</h2>
+        <p>Un outil simple et efficace pour organiser votre temps et vos ressources.</p>
     </section>
 </body>
 </html>
