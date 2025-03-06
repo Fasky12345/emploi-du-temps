@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration des Cours</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .course-list { margin-top: 20px; }
+        .course-item { padding: 5px; margin: 5px; border-radius: 5px; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Ajouter un cours</h1>
+    <label>Nom du cours: <input type="text" id="courseName"></label>
+    <label>Professeur: <input type="text" id="professor"></label>
+    <label>Couleur: <input type="color" id="color"></label>
+    <button onclick="addCourse()">Ajouter</button>
+    
+    <h2>Liste des cours</h2>
+    <div class="course-list" id="courseList"></div>
+    
+    <script>
+        let courses = JSON.parse(localStorage.getItem('courses')) || [];
+
+        function addCourse() {
+            let name = document.getElementById('courseName').value;
+            let professor = document.getElementById('professor').value;
+            let color = document.getElementById('color').value;
+            
+            if (name.trim() === '') return alert('Veuillez entrer un nom de cours.');
+            
+            let course = { name, professor, color };
+            courses.push(course);
+            localStorage.setItem('courses', JSON.stringify(courses));
+            displayCourses();
+        }
+
+        function displayCourses() {
+            let list = document.getElementById('courseList');
+            list.innerHTML = '';
+            courses.forEach((course, index) => {
+                let div = document.createElement('div');
+                div.className = 'course-item';
+                div.style.backgroundColor = course.color;
+                div.textContent = `${course.name} - ${course.professor}`;
+                list.appendChild(div);
+            });
+        }
+
+        displayCourses();
+    </script>
+</body>
+</html>
