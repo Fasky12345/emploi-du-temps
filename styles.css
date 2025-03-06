@@ -1,32 +1,41 @@
 /* Styles généraux */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 .container {
     width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
-    background: white;
+    max-width: 1200px;
+    margin: auto;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    text-align: center;
+    font-weight: 600;
 }
 
 /* Menu */
 .menu {
-    display: flex;
-    align-items: center;
-    background: #333;
+    background-color: #222;
     color: white;
-    padding: 10px;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .menu button {
-    background: transparent;
+    background: none;
     border: none;
     color: white;
     font-size: 24px;
@@ -35,77 +44,55 @@ body {
 
 .menu-items {
     display: none;
-    flex-direction: column;
-    background: #444;
     position: absolute;
+    background: #333;
     top: 50px;
-    left: 10px;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.menu-items.active {
-    display: flex;
+    left: 0;
+    width: 100%;
+    text-align: center;
 }
 
 .menu-items a {
+    display: block;
+    padding: 10px;
     color: white;
     text-decoration: none;
-    padding: 5px 10px;
+    transition: 0.3s;
 }
 
 .menu-items a:hover {
     background: #555;
 }
 
+.menu-items.active {
+    display: block;
+}
+
 /* Formulaire */
 .form-group {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 20px;
+    justify-content: center;
+    margin: 20px 0;
 }
 
-.form-group input,
-.form-group button {
+.form-group input, .form-group button {
     padding: 10px;
-    font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-.form-group button {
-    background: #007BFF;
+button {
+    background: #007bff;
     color: white;
-    cursor: pointer;
-}
-
-.form-group button:hover {
-    background: #0056b3;
-}
-
-/* Liste des cours */
-.course-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.course-item {
-    padding: 10px;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.course-item button {
-    background: transparent;
     border: none;
-    color: white;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #0056b3;
 }
 
 /* Emploi du temps */
@@ -114,21 +101,40 @@ body {
     grid-template-columns: repeat(6, 1fr);
     gap: 5px;
     margin-top: 20px;
+    text-align: center;
 }
 
 .cell {
     padding: 15px;
-    border: 1px solid #ccc;
-    text-align: center;
+    border: 1px solid black;
     min-height: 50px;
     cursor: pointer;
-    transition: 0.3s;
+    font-weight: bold;
+    background: white;
+    transition: transform 0.3s ease-in-out;
 }
 
 .cell:hover {
-    background: rgba(0, 123, 255, 0.1);
+    transform: scale(1.1);
 }
 
-.cell.empty {
-    background-color: #f0f0f0;
+/* Liste des cours */
+.course-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.course-item {
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.course-item:hover {
+    transform: scale(1.1);
 }
