@@ -16,12 +16,13 @@
     </nav>
     
     <div class="container">
-        <h1>Ajouter un cours</h1>
+        <h1>Ajouter ou Modifier un cours</h1>
         <div class="form-group">
+            <input type="hidden" id="editingIndex">
             <input type="text" id="courseName" placeholder="Nom du cours">
             <input type="text" id="professor" placeholder="Professeur">
             <input type="color" id="color">
-            <button onclick="addCourse()">Ajouter</button>
+            <button onclick="addOrUpdateCourse()">Ajouter/Mettre à jour</button>
         </div>
         
         <h2>Liste des cours</h2>
@@ -42,30 +43,44 @@
             menu.classList.toggle('active');
         }
         
-        function addCourse() {
+        function addOrUpdateCourse() {
             let name = document.getElementById('courseName').value.trim();
             let professor = document.getElementById('professor').value.trim();
             let color = document.getElementById('color').value;
+            let editingIndex = document.getElementById('editingIndex').value;
             
             if (!name) return alert('Veuillez entrer un nom de cours.');
             
-            let course = { name, professor, color };
-            courses.push(course);
+            if (editingIndex) {
+                courses[editingIndex] = { name, professor, color };
+            } else {
+                courses.push({ name, professor, color });
+            }
+            
             localStorage.setItem('courses', JSON.stringify(courses));
             displayCourses();
             updateCourseDropdown();
+            document.getElementById('editingIndex').value = '';
         }
 
         function displayCourses() {
             let list = document.getElementById('courseList');
             list.innerHTML = '';
-            courses.forEach(course => {
+            courses.forEach((course, index) => {
                 let div = document.createElement('div');
                 div.className = 'course-item';
                 div.style.backgroundColor = course.color;
-                div.textContent = `${course.name} - ${course.professor}`;
+                div.innerHTML = `${course.name} - ${course.professor} <button onclick="editCourse(${index})">✏️ Modifier</button>`;
                 list.appendChild(div);
             });
+        }
+
+        function editCourse(index) {
+            let course = courses[index];
+            document.getElementById('courseName').value = course.name;
+            document.getElementById('professor').value = course.professor;
+            document.getElementById('color').value = course.color;
+            document.getElementById('editingIndex').value = index;
         }
 
         function updateCourseDropdown() {
