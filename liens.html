@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liens Utiles</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="menu">
+        <div class="logo">MonSite</div>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="emploi-du-temps.html">Emploi du Temps</a></li>
+            <li><a href="liens.html">Liens</a></li>
+        </ul>
+    </nav>
+    
+    <header class="hero">
+        <h1>Liens Utiles</h1>
+    </header>
+
+    <div class="container">
+        <h2>Ajouter un Lien</h2>
+        <div class="form-group">
+            <input type="text" id="linkName" placeholder="Nom du lien">
+            <input type="url" id="linkURL" placeholder="URL du lien">
+            <button onclick="addLink()">Ajouter</button>
+        </div>
+        
+        <h2>Vos Liens</h2>
+        <div class="link-list" id="userLinks"></div>
+        
+        <h2>Liens Fournis</h2>
+        <div class="link-list">
+            <ul>
+                <li><a href="https://www.google.com" target="_blank">Google</a></li>
+                <li><a href="https://www.wikipedia.org" target="_blank">Wikipedia</a></li>
+                <li><a href="https://www.openclassrooms.com" target="_blank">OpenClassrooms</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
