@@ -4,41 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emploi du Temps</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .course-list { margin-top: 20px; }
+        .course-item { padding: 5px; margin: 5px; border-radius: 5px; color: white; }
+        .schedule { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-top: 20px; }
+        .cell { padding: 10px; border: 1px solid black; text-align: center; min-height: 50px; cursor: pointer; }
+        .cell.empty { background-color: #f0f0f0; }
+    </style>
 </head>
 <body>
-    <nav class="menu">
-        <div class="logo">MonSite</div>
-        <ul>
-            <li><a href="index.html">Accueil</a></li>
-            <li><a href="emploi-du-temps.html">Emploi du Temps</a></li>
-            <li><a href="liens.html">Liens</a></li>
-        </ul>
-    </nav>
+    <h1>Ajouter un cours</h1>
+    <label>Nom du cours: <input type="text" id="courseName"></label>
+    <label>Professeur: <input type="text" id="professor"></label>
+    <label>Couleur: <input type="color" id="color"></label>
+    <button onclick="addCourse()">Ajouter</button>
     
-    <header class="hero">
-        <h1>Votre Emploi du Temps</h1>
-    </header>
-
-    <div class="container">
-        <h2>Ajouter ou Modifier un Cours</h2>
-        <div class="form-group">
-            <input type="hidden" id="editingIndex">
-            <input type="text" id="courseName" placeholder="Nom du cours">
-            <input type="text" id="professor" placeholder="Professeur">
-            <input type="color" id="color">
-            <button onclick="addOrUpdateCourse()">Ajouter/Mettre à jour</button>
-        </div>
+    <h2>Liste des cours</h2>
+    <div class="course-list" id="courseList"></div>
+    
+    <h2>Emploi du Temps</h2>
+    <label for="selectedCourse">Sélectionner un cours :</label>
+    <select id="selectedCourse"></select>
+    <div class="schedule" id="scheduleGrid"></div>
+    
+    <script>
+        let courses = JSON.parse(localStorage.getItem('courses')) || [];
+        let schedule = JSON.parse(localStorage.getItem('schedule')) || {};
         
-        <h2>Liste des Cours</h2>
-        <div class="course-list" id="courseList"></div>
-        
-        <h2>Emploi du Temps</h2>
-        <label for="selectedCourse">Sélectionner un cours :</label>
-        <select id="selectedCourse"></select>
-        <div class="schedule" id="scheduleGrid"></div>
-    </div>
+        function addCourse() {
+            let name = document.getElementById('courseName').value;
+            let professor = document.getElementById('professor').value;
+            let color = document.getElementById('color').value;
+            
+            if (name.trim() === '') return alert('Veuillez entrer un nom de cours.');
+            
+            let course = { name, professor, color };
+            courses.push(course);
+            localStorage.setItem('courses', JSON.stringify(courses));
+            displayCourses();
+            updateCourseDropdown();
+        }
 
-    <script src="script.js"></script>
+        function displayCourses() {
+            let list = document.getElementById('courseList');
+            list.innerHTML = '';
+            courses.forEach(course => {
+                let div = document.createElement('div');
+                div.className = 'course-item';
+                div.style.backgroundColor = course.color;
+                div.textContent = `${course.name} - ${course.professor}`;
+                list.appendChild(div);
+            });
+        }
+
+        function updateCourseDropdown() {
+            let dropdown = document.getElementById('selectedCourse');
+            dropdown.innerHTML = '';
+            courses.forEach(course => {
+                let option = document.createElement('option');
+                option.value = course.name;
+                option.textContent = course.name;
+                dropdown.appendChild(option);
+            });
+        }
+
+        function createScheduleGrid() {
+            let grid = document.getElementById('scheduleGrid');
+            grid.innerHTML = '';
+            let days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
+            let hours = ['08h-09h', '09h-10h', '10h-11h', '11h-12h', '14h-15h', '15h-16h'];
+            
+            // En-têtes
+            grid.innerHTML += '<div></div>'; // Coin vide
+            days.forEach(day => {
+                let header = document.createElement('div');
+                header.className = 'cell';
+                header.textContent = day;
+                grid.appendChild(header);
+            });
+
+            hours.forEach(hour => {
+                let hourCell = document.createElement('div');
+                hourCell.className = 'cell';
+                hourCell.textContent = hour;
+                grid.appendChild(hourCell);
+                
+                days.forEach(day => {
+                    let cell = document.createElement('div');
+                    cell.className = 'cell empty';
+                    cell.dataset.day = day;
+                    cell.dataset.hour = hour;
+                    cell.onclick = assignCourse;
+                    
+                    let key = `${day}-${hour}`;
+                    if (schedule[key]) {
+                        cell.style.backgroundColor = schedule[key].color;
+                        cell.textContent = schedule[key].name;
+                    }
+                    
+                    grid.appendChild(cell);
+                });
+            });
+        }
+
+        function assignCourse() {
+            let selectedCourseName = document.getElementById('selectedCourse').value;
+            let selectedCourse = courses.find(c => c.name === selectedCourseName);
+            if (!selectedCourse) return;
+            
+            this.style.backgroundColor = selectedCourse.color;
+            this.textContent = selectedCourse.name;
+            this.classList.remove('empty');
+            
+            let key = `${this.dataset.day}-${this.dataset.hour}`;
+            schedule[key] = selectedCourse;
+            localStorage.setItem('schedule', JSON.stringify(schedule));
+        }
+
+        displayCourses();
+        updateCourseDropdown();
+        createScheduleGrid();
+    </script>
 </body>
 </html>
