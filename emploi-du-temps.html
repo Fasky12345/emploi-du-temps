@@ -23,11 +23,21 @@
     <label for="selectCourse">Sélectionner un cours :</label>
     <select id="selectCourse"></select>
 
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nom du Cours</th>
+                <th>Professeur</th>
+                <th>Couleur</th>
+            </tr>
+        </thead>
+        <tbody id="courseTableBody">
+        </tbody>
+    </table>
+
     <script>
-        // Déclaration correcte de la variable courses
         let courses = [];
 
-        // Fonction pour charger les cours stockés
         function loadCourses() {
             let storedCourses = localStorage.getItem("courses");
             if (storedCourses) {
@@ -39,9 +49,9 @@
                 }
             }
             updateCourseList();
+            updateCourseTable();
         }
 
-        // Fonction pour ajouter un cours
         function addCourse() {
             let name = document.getElementById("courseName").value.trim();
             let professor = document.getElementById("professor").value.trim();
@@ -57,11 +67,11 @@
             localStorage.setItem("courses", JSON.stringify(courses));
 
             updateCourseList();
+            updateCourseTable();
             document.getElementById("courseName").value = "";
             document.getElementById("professor").value = "";
         }
 
-        // Fonction pour mettre à jour la liste des cours affichés
         function updateCourseList() {
             let courseList = document.getElementById("courseList");
             let selectCourse = document.getElementById("selectCourse");
@@ -81,7 +91,30 @@
             });
         }
 
-        // Charger les cours au démarrage
+        function updateCourseTable() {
+            let tableBody = document.getElementById("courseTableBody");
+            tableBody.innerHTML = ""; 
+
+            courses.forEach(course => {
+                let row = document.createElement("tr");
+
+                let nameCell = document.createElement("td");
+                nameCell.textContent = course.name;
+
+                let professorCell = document.createElement("td");
+                professorCell.textContent = course.professor;
+
+                let colorCell = document.createElement("td");
+                colorCell.style.backgroundColor = course.color;
+                colorCell.textContent = course.color;
+
+                row.appendChild(nameCell);
+                row.appendChild(professorCell);
+                row.appendChild(colorCell);
+                tableBody.appendChild(row);
+            });
+        }
+
         loadCourses();
     </script>
 </body>
